@@ -4,10 +4,17 @@ This file contains all the SQL queries used in the application
 """
 
 from myproject import app, db
-from myproject.models import Student, Parent, Professor, Course, Admin, ClassRoom, Attendance, student_course
-from werkzeug.security import generate_password_hash
-from datetime import date, datetime
-import os
+from myproject.models import (
+    Student,
+    Parent,
+    Professor,
+    Course,
+    Admin,
+    ClassRoom,
+    Attendance,
+    student_course,
+)
+from datetime import date
 import random
 
 def insert_sample_data():

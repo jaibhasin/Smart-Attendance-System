@@ -1,37 +1,44 @@
-A web-based smart attendance management system for educational institutions, built with Python and Flask.
-
 # Smart Attendance System
 
+A web-based attendance management platform built with Python and Flask. It allows administrators, teachers, students and parents to monitor attendance in real time.
+
 ## Features
-- Admin, Teacher, Student, and Parent logins
-- Attendance marking and tracking
-- Classroom and course management
-- User-friendly web interface
+- Role-based authentication for admins, teachers, students and parents
+- Mark and track attendance per class and course
+- Overview dashboards for administrators and teachers
+- Simple interface built with Flask templates
 
 ## Setup
-1. Clone the repository:
+1. Clone the repository
    ```bash
    git clone https://github.com/yourusername/smart_attendance.git
    cd smart_attendance
    ```
-2. Install dependencies:
+2. Create a virtual environment and install dependencies
    ```bash
+   python -m venv venv
+   source venv/bin/activate
    pip install -r requirements.txt
    ```
-3. Run the application:
+3. Run database migrations
+   ```bash
+   flask db upgrade
+   ```
+4. Launch the development server
    ```bash
    python app.py
+   # or
+   flask run
    ```
 
 ## Database
-- Uses SQLite by default (see `myproject/data.sqlite`).
-- For production, configure your preferred database in `myproject/models.py` and `database_queries.py`.
+- SQLite is used for development (`myproject/data.sqlite`).
+- Adjust the configuration in `myproject/__init__.py` if you wish to use another database engine.
 
 ## Folder Structure
-- `myproject/` - Main application code
-- `migrations/` - Database migrations (Alembic)
-- `static/` - Static assets (CSS, images)
-- `templates/` - HTML templates
+- `myproject/` - main application package
+- `migrations/` - Alembic migration scripts
+- `static/` - CSS and image assets
+- `templates/` - Jinja2 HTML templates
 
-## License
-[MIT](LICENSE) 
+## License[MIT](LICENSE)
