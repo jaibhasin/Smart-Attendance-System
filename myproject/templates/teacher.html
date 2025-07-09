@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard - Smart Attendance System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fb;
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-name {
+            font-weight: 500;
+        }
+        
+        .logout-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .dashboard-title {
+            color: #333;
+            font-size: 1.8rem;
+        }
+        
+        .teacher-info-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .teacher-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+        
+        .teacher-details {
+            flex: 1;
+        }
+        
+        .teacher-details h2 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+        }
+        
+        .teacher-role {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+        
+        .stat-card {
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #764ba2;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .action-btn {
+            padding: 8px 16px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .primary-btn {
+            background-color: #764ba2;
+            color: white;
+        }
+        
+        .primary-btn:hover {
+            background-color: #663d91;
+        }
+        
+        .secondary-btn {
+            background-color: #e8f4fd;
+            color: #0c5460;
+        }
+        
+        .secondary-btn:hover {
+            background-color: #d1ecf1;
+        }
+        
+        .quick-actions {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .quick-actions h3 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .action-card {
+            background-color: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-5px);
+            background-color: #f1f3f9;
+        }
+        
+        .action-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #764ba2;
+        }
+        
+        .action-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        .action-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .class-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        
+        .class-tab {
+            padding: 8px 16px;
+            background-color: #f1f3f9;
+            border-radius: 5px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .class-tab.active {
+            background-color: #764ba2;
+            color: white;
+        }
+        
+        .attendance-panel {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .panel-title {
+            color: #333;
+            font-size: 1.3rem;
+        }
+        
+        .panel-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .filter-dropdown {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: white;
+        }
+        
+        .search-box {
+            display: flex;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .search-input {
+            padding: 8px 12px;
+            border: none;
+            outline: none;
+            width: 200px;
+        }
+        
+        .search-btn {
+            background-color: #f1f3f9;
+            border: none;
+            padding: 0 15px;
+            cursor: pointer;
+        }
+        
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .attendance-table th, 
+        .attendance-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .attendance-table th {
+            color: #555;
+            font-weight: 600;
+            background-color: #f9f9f9;
+        }
+        
+        .attendance-table tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .student-avatar-small {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .student-name {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .student-id {
+            color: #666;
+            font-size: 0.8rem;
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .present {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .absent {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .late {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .attendance-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-icon-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .edit-btn {
+            background-color: #e8f4fd;
+            color: #0c5460;
+        }
+        
+        .edit-btn:hover {
+            background-color: #d1ecf1;
+        }
+        
+        .message-btn {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .message-btn:hover {
+            background-color: #c3e6cb;
+        }
+        
+        .attendance-summary {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .summary-item {
+            text-align: center;
+        }
+        
+        .summary-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .summary-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .mark-attendance-form {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-title {
+            color: #333;
+            font-size: 1.3rem;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .form-group {
+            flex: 1;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            background-color: white;
+        }
+        
+        .form-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 1.5rem;
+        }
+        
+        .reports-panel {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+        }
+        
+        .reports-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .reports-title {
+            color: #333;
+            font-size: 1.3rem;
+        }
+        
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .report-card {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .report-card:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .report-icon {
+            font-size: 2rem;
+            color: #764ba2;
+            margin-bottom: 1rem;
+        }
+        
+        .report-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .report-desc {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .report-link {
+            color: #764ba2;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .report-link:hover {
+            text-decoration: underline;
+        }
+        
+        .attendance-mode-toggle {
+            display: flex;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .mode-option {
+            padding: 8px 16px;
+            background-color: #f1f3f9;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .mode-option.active {
+            background-color: #764ba2;
+            color: white;
+        }
+        
+        .checkbox-control {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            .teacher-info-card {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .action-buttons {
+                justify-content: center;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .attendance-table th, 
+            .attendance-table td {
+                padding: 8px;
+            }
+            
+            .student-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <img  src="{{ url_for('static', filename='assets/images.png') }}" alt="Logo">
+            <span>Smart Attendance System</span>
+        </div>
+        <div class="user-menu">
+            <span class="user-name">Prof. Robert Smith</span>
+            <button class="logout-btn">Logout</button>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Teacher Dashboard</h1>
+            <div class="date">April 8, 2025</div>
+        </div>
+        
+        <!-- Teacher Profile Card -->
+        <div class="teacher-info-card">
+            <img src="{{ url_for('static', filename='assets/man.png') }}" alt="Teacher Avatar" class="teacher-avatar">
+            <div class="teacher-details">
+                <h2>Prof. Robert Smith</h2>
+                <div class="teacher-role">Professor of Mathematics</div>
+                
+                <div class="stats-grid">
+                    <!-- <div class="stat-card">
+                        <div class="stat-value">6</div>
+                        <div class="stat-label">Classes</div>
+                    </div> -->
+                    <div class="stat-card">
+                        <div class="stat-value">189</div>
+                        <div class="stat-label">Students</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">92%</div>
+                        <div class="stat-label">Average Attendance</div>
+                    </div>
+                    <!-- <div class="stat-card">
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">Reports Due</div>
+                    </div> -->
+                </div>
+                
+                
+            </div>
+        </div>
+        
+        <!-- Quick Actions Section -->
+        <!-- <div class="quick-actions">
+            <h3>Quick Actions</h3>
+            <div class="actions-grid">
+                <div class="action-card" id="mark-attendance-btn">
+                    <div class="action-icon">📋</div>
+                    <div class="action-title">Mark Attendance</div>
+                    <div class="action-desc">Record attendance for today's classes</div>
+                </div>
+                <div class="action-card">
+                    <div class="action-icon">📊</div>
+                    <div class="action-title">Generate Reports</div>
+                    <div class="action-desc">Create attendance reports for classes</div>
+                </div>
+                <div class="action-card">
+                    <div class="action-icon">✉️</div>
+                    <div class="action-title">Message Parents</div>
+                    <div class="action-desc">Send messages to student parents</div>
+                </div>
+                <div class="action-card">
+                    <div class="action-icon">⚙️</div>
+                    <div class="action-title">Class Settings</div>
+                    <div class="action-desc">Manage class settings and details</div>
+                </div>
+            </div>
+        </div>
+         -->
+
+
+         
+        <!-- Mark Attendance Form -->
+        <div class="mark-attendance-form" id="mark-attendance-form" style="display: none;">
+            <div class="form-header">
+                <div class="form-title">Mark Attendance</div>
+                <button class="action-btn secondary-btn" id="close-form-btn">Close</button>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Class</label>
+                    <select class="form-select">
+                        <option>Mathematics - MATH201 - 4th Semester</option>
+                        <option>Mathematics - MATH101 - 1st Semester</option>
+                        <option>Statistics - STAT202 - 3rd Semester</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Date</label>
+                    <input type="date" class="form-control" value="2025-04-08">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Time</label>
+                    <select class="form-select">
+                        <option>09:00 AM - 10:30 AM</option>
+                        <option>11:00 AM - 12:30 PM</option>
+                        <option>02:00 PM - 03:30 PM</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-buttons">
+                <button class="action-btn secondary-btn">Cancel</button>
+                <button class="action-btn primary-btn">Mark Attendance</button>
+            </div>
+        </div>
+        
+        <!-- Class Selector -->
+        <h3>Your Classes</h3>
+        <div class="class-tabs">
+            <div class="class-tab active">Mathematics MATH201 (4th Sem)</div>
+            <div class="class-tab">Mathematics MATH101 (1st Sem)</div>
+            <div class="class-tab">Statistics STAT202 (3rd Sem)</div>
+            <div class="class-tab">Advanced Calculus MATH301 (5th Sem)</div>
+            <div class="class-tab">Discrete Math MATH204 (4th Sem)</div>
+            <div class="class-tab">Linear Algebra MATH203 (3rd Sem)</div>
+        </div>
+        
+        <!-- Attendance Panel -->
+        <div class="attendance-panel">
+            <div class="panel-header">
+                <div class="panel-title">Mathematics (MATH201) - 4th Semester</div>
+                <div class="panel-actions">
+                    <div class="attendance-mode-toggle">
+                        <div class="mode-option active">Today's Attendance</div>
+                        <div class="mode-option">Overall Report</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="panel-header">
+                <div>
+                    <select class="filter-dropdown">
+                        <option>April 8, 2025 (Today)</option>
+                        <option>April 7, 2025</option>
+                        <option>April 6, 2025</option>
+                    </select>
+                </div>
+                <div class="search-box">
+                    <input type="text" placeholder="Search by name or ID" class="search-input">
+                    <button class="search-btn">🔍</button>
+                </div>
+            </div>
+            
+            <table class="attendance-table">
+                <thead>
+                    <tr>
+                        <!-- Removed checkbox column -->
+                        <th>Student</th>
+                        <th>Attendance Status</th>
+                        <th>Overall</th>
+                        <!-- Removed "Last 5 Classes" column -->
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <!-- Removed checkbox -->
+                        <td>
+                            <div class="student-info">
+                                <!-- Removed student image -->
+                                <div>
+                                    <div class="student-name">John Doe</div>
+                                    <div class="student-id">STU20250408</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="status-badge present">Present</span></td>
+                        <td>95% (38/40)</td>
+                        <!-- Removed "Last 5 Classes" -->
+                        <td>
+                            <div class="attendance-actions">
+                                <!-- Removed edit button -->
+                                <button class="action-icon-btn message-btn">✉️</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <!-- Removed checkbox -->
+                        <td>
+                            <div class="student-info">
+                                <!-- Removed student image -->
+                                <div>
+                                    <div class="student-name">Emma Johnson</div>
+                                    <div class="student-id">STU20250302</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="status-badge absent">Absent</span></td>
+                        <td>82% (33/40)</td>
+                        <!-- Removed "Last 5 Classes" -->
+                        <td>
+                            <div class="attendance-actions">
+                                <!-- Removed edit button -->
+                                <button class="action-icon-btn message-btn">✉️</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <!-- Removed checkbox -->
+                        <td>
+                            <div class="student-info">
+                                <!-- Removed student image -->
+                                <div>
+                                    <div class="student-name">Michael Brown</div>
+                                    <div class="student-id">STU20250129</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="status-badge present">Present</span></td>
+                        <td>90% (36/40)</td>
+                        <!-- Removed "Last 5 Classes" -->
+                        <td>
+                            <div class="attendance-actions">
+                                <!-- Removed edit button -->
+                                <button class="action-icon-btn message-btn">✉️</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <!-- Removed checkbox -->
+                        <td>
+                            <div class="student-info">
+                                <!-- Removed student image -->
+                                <div>
+                                    <div class="student-name">Sarah Williams</div>
+                                    <div class="student-id">STU20250215</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="status-badge late">Late</span></td>
+                        <td>87% (35/40)</td>
+                        <!-- Removed "Last 5 Classes" -->
+                        <td>
+                            <div class="attendance-actions">
+                                <!-- Removed edit button -->
+                                <button class="action-icon-btn message-btn">✉️</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <!-- Removed checkbox -->
+                        <td>
+                            <div class="student-info">
+                                <!-- Removed student image -->
+                                <div>
+                                    <div class="student-name">James Wilson</div>
+                                    <div class="student-id">STU20250189</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="status-badge present">Present</span></td>
+                        <td>92% (37/40)</td>
+                        <!-- Removed "Last 5 Classes" -->
+                        <td>
+                            <div class="attendance-actions">
+                                <!-- Removed edit button -->
+                                <button class="action-icon-btn message-btn">✉️</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <!-- Removed checkbox -->
+                        <td>
+                            <div class="student-info">
+                                <!-- Removed student image -->
+                                <div>
+                                    <div class="student-name">Emily Davis</div>
+                                    <div class="student-id">STU20250237</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="status-badge present">Present</span></td>
+                        <td>97% (39/40)</td>
+                        <!-- Removed "Last 5 Classes" -->
+                        <td>
+                            <div class="attendance-actions">
+                                <!-- Removed edit button -->
+                                <button class="action-icon-btn message-btn">✉️</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="attendance-summary">
+                <div class="summary-item">
+                    <div class="summary-value">28/30</div>
+                    <div class="summary-label">Present</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value">1/30</div>
+                    <div class="summary-label">Absent</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value">1/30</div>
+                    <div class="summary-label">Late</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value">93%</div>
+                    <div class="summary-label">Today's Attendance</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value">9:15 AM</div>
+                    <div class="summary-label">Last Updated</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Reports Section -->
+        <div class="reports-panel">
+            <div class="reports-header">
+                <div class="reports-title">Attendance Reports</div>
+            </div>
+            
+            <div class="reports-grid">
+                <div class="report-card">
+                    <div class="report-icon">📊</div>
+                    <div class="report-title">Weekly Report</div>
+                    <div class="report-desc">Attendance summary for the past week across all classes.</div>
+                    <div class="report-link">
+                        View Report →
+                    </div>
+                </div>
+                <div class="report-card">
+                    <div class="report-icon">📅</div>
+                    <div class="report-title">Monthly Report</div>
+                    <div class="report-desc">Attendance summary for the past month across all classes.</div>
+                    <div class="report-link">
+                        View Report →
+                    </div>
+                </div>
+                <div class="report-card">
+                    <div class="report-icon">📈</div>
+                    <div class="report-title">Custom Report</div>
+                    <div class="report-desc">Generate a custom attendance report for specific dates.</div>
+                    <div class="report-link">
+                        View Report →
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript to toggle the visibility of the Mark Attendance form
+        const markAttendanceBtn = document.getElementById('mark-attendance-btn');
+        const markAttendanceForm = document.getElementById('mark-attendance-form');
+        const closeFormBtn = document.getElementById('close-form-btn');
+
+        markAttendanceBtn.addEventListener('click', () => {
+            markAttendanceForm.style.display = 'block';
+        });
+
+        closeFormBtn.addEventListener('click', () => {
+            markAttendanceForm.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

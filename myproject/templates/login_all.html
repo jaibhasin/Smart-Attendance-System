@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Attendance System - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            color: #666;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            color: #764ba2;
+            border-bottom: 3px solid #764ba2;
+        }
+        
+        .form-container {
+            display: none;
+        }
+        
+        .form-container.active {
+            display: block;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border 0.3s ease;
+        }
+        
+        input:focus {
+            border-color: #764ba2;
+            outline: none;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
+        }
+        
+        .forgot-password {
+            display: block;
+            margin-top: 15px;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        
+        .logo {
+            width: 80px;
+            margin-bottom: 20px;
+        }
+        
+        .form-footer {
+            margin-top: 30px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="{{ url_for('static', filename='assets/images.png') }}" alt="Logo" class="logo">
+        <h1>Smart Attendance System</h1>
+        
+        <div class="tabs">
+            <div class="tab active" data-target="student">Student</div>
+            <div class="tab" data-target="teacher">Teacher</div>
+            <div class="tab" data-target="parent">Parent</div>
+        </div>
+        
+        <!-- Student Login Form -->
+        <div class="form-container active" id="student-form">
+            <form>
+                <div class="input-group">
+                    <label for="student-id">Student Email ID</label>
+                    <input type="text" id="student-id" placeholder="Enter your student ID" required>
+                </div>
+                <div class="input-group">
+                    <label for="student-password">Password</label>
+                    <input type="password" id="student-password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit">Login as Student</button>
+                <a href="#" class="forgot-password">Forgot password?</a>
+            </form>
+        </div>
+        
+        <!-- Teacher Login Form -->
+        <div class="form-container" id="teacher-form">
+            <form>
+                <div class="input-group">
+                    <label for="teacher-id">Teacher Email ID</label>
+                    <input type="text" id="teacher-id" placeholder="Enter your teacher ID" required>
+                </div>
+                <div class="input-group">
+                    <label for="teacher-password">Password</label>
+                    <input type="password" id="teacher-password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit">Login as Teacher</button>
+                <a href="#" class="forgot-password">Forgot password?</a>
+            </form>
+        </div>
+        
+        <!-- Parent Login Form -->
+        <div class="form-container" id="parent-form">
+            <form>
+                <div class="input-group">
+                    <label for="parent-id">Parent Email ID</label>
+                    <input type="text" id="parent-id" placeholder="Enter your parent ID" required>
+                </div>
+                <div class="input-group">
+                    <label for="parent-password">Password</label>
+                    <input type="password" id="parent-password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit">Login as Parent</button>
+                <a href="#" class="forgot-password">Forgot password?</a>
+            </form>
+        </div>
+        
+        <div class="form-footer">
+            © 2025 Smart Attendance System
+        </div>
+    </div>
+    
+    <script>
+        // Tab switching functionality
+        const tabs = document.querySelectorAll('.tab');
+        const forms = document.querySelectorAll('.form-container');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = tab.getAttribute('data-target');
+                
+                // Remove active class from all tabs and forms
+                tabs.forEach(t => t.classList.remove('active'));
+                forms.forEach(f => f.classList.remove('active'));
+                
+                // Add active class to clicked tab and corresponding form
+                tab.classList.add('active');
+                document.getElementById(`${target}-form`).classList.add('active');
+            });
+        });
+        
+        // Form submission handler (example)
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                // Add your authentication logic here
+                alert('Login functionality will be implemented on the backend');
+            });
+        });
+    </script>
+</body>
+</html>

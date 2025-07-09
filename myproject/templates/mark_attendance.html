@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Records - {{ course.course_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .page-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .page-title {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 24px;
+        }
+        .course-info {
+            color: #666;
+            margin-top: 10px;
+        }
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+        .flash-message {
+            padding: 12px 20px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        .flash-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .mark-attendance-form {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        .form-title {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+        .form-group input[type="date"] {
+            width: 200px;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .attendance-table th, .attendance-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        .attendance-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .attendance-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        .attendance-table select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+        }
+        .present {
+            color: #28a745;
+            font-weight: 600;
+        }
+        .absent {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+        .actions {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+        }
+        .previous-records {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-top: 30px;
+        }
+        .section-title {
+            font-size: 1.3em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        .no-records {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            font-style: italic;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Attendance Records</h1>
+            <div class="course-info">
+                <strong>Course:</strong> {{ course.course_name }}<br>
+                <strong>Course ID:</strong> {{ course.course_id }}
+            </div>
+        </div>
+
+        <!-- Flash Messages -->
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- Mark Attendance Form -->
+        <div class="mark-attendance-form">
+            <div class="form-title">Mark Attendance for Today</div>
+            <form action="{{ url_for('mark_attendance', course_id=course.course_id) }}" method="POST">
+                <div class="form-group">
+                    <label>Date:</label>
+                    <input type="date" name="date" value="{{ today }}" required>
+                </div>
+                <table class="attendance-table">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in students %}
+                        <tr>
+                            <td>{{ entry.student.first_name }} {{ entry.student.last_name }}</td>
+                            <td>
+                                <select name="status_{{ entry.student.student_id }}" required>
+                                    <option value="Present">Present</option>
+                                    <option value="Absent">Absent</option>
+                                </select>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="actions">
+                    <button type="submit" class="btn btn-primary">Save Attendance</button>
+                    <a href="{{ url_for('teacher') }}" class="btn btn-secondary">Back to Dashboard</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Previous Attendance Records -->
+        <div class="previous-records">
+            <h2 class="section-title">Previous Attendance Records</h2>
+            {% if dates %}
+                <table class="attendance-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            {% for entry in students %}
+                                <th>{{ entry.student.first_name }} {{ entry.student.last_name }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for date in dates %}
+                        <tr>
+                            <td>{{ date.strftime('%Y-%m-%d') }}</td>
+                            {% for entry in students %}
+                                {% set status = entry.attendance_by_date.get(date, 'N/A') %}
+                                <td class="{{ 'present' if status == 'Present' else 'absent' if status == 'Absent' else '' }}">
+                                    {{ status }}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="no-records">
+                    No previous attendance records found.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

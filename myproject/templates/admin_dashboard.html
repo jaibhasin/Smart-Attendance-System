@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Smart Attendance System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 48px 0 0;
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+            background-color: #343a40;
+        }
+        .sidebar-sticky {
+            position: relative;
+            top: 0;
+            height: calc(100vh - 48px);
+            padding-top: .5rem;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        .sidebar .nav-link {
+            font-weight: 500;
+            color: #f8f9fa;
+            padding: 0.75rem 1rem;
+        }
+        .sidebar .nav-link:hover {
+            color: #fff;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .sidebar .nav-link.active {
+            color: #fff;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .sidebar .nav-link i {
+            margin-right: 8px;
+        }
+        main {
+            padding-top: 48px;
+        }
+        .navbar {
+            background-color: #343a40 !important;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        .card-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .card-icon {
+            font-size: 2.5rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Smart Attendance</a>
+        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-nav">
+            <div class="nav-item text-nowrap">
+                <a class="nav-link px-3" href="{{ url_for('admin_logout') }}">Sign out</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky sidebar-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{ url_for('admin_dashboard') }}">
+                                <i class="bi bi-speedometer2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('admin_students') }}">
+                                <i class="bi bi-people"></i>
+                                Students
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('admin_professors') }}">
+                                <i class="bi bi-person-badge"></i>
+                                Professors
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('admin_courses') }}">
+                                <i class="bi bi-book"></i>
+                                Courses
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('admin_attendance') }}">
+                                <i class="bi bi-calendar-check"></i>
+                                Attendance
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('admin_classrooms') }}">
+                                <i class="bi bi-building"></i>
+                                Classrooms
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Admin Dashboard</h1>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category if category != 'error' else 'danger' }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="card-title">Students</div>
+                                    <div class="card-value">{{ stats.students }}</div>
+                                </div>
+                                <i class="bi bi-people card-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-success text-white">
+                            <div class="card-body d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="card-title">Professors</div>
+                                    <div class="card-value">{{ stats.professors }}</div>
+                                </div>
+                                <i class="bi bi-person-badge card-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-warning text-dark">
+                            <div class="card-body d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="card-title">Courses</div>
+                                    <div class="card-value">{{ stats.courses }}</div>
+                                </div>
+                                <i class="bi bi-book card-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-info text-white">
+                            <div class="card-body d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="card-title">Attendance Records</div>
+                                    <div class="card-value">{{ stats.attendance }}</div>
+                                </div>
+                                <i class="bi bi-calendar-check card-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Quick Actions</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="list-group">
+                                    <a href="{{ url_for('admin_students') }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                        Manage Students
+                                        <i class="bi bi-chevron-right"></i>
+                                    </a>
+                                    <a href="{{ url_for('admin_professors') }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                        Manage Professors
+                                        <i class="bi bi-chevron-right"></i>
+                                    </a>
+                                    <a href="{{ url_for('admin_courses') }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                        Manage Courses
+                                        <i class="bi bi-chevron-right"></i>
+                                    </a>
+                                    <a href="{{ url_for('admin_attendance') }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                        View Attendance Records
+                                        <i class="bi bi-chevron-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">System Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>System Name:</strong></td>
+                                            <td>Smart Attendance System</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Version:</strong></td>
+                                            <td>1.0.0</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Last Updated:</strong></td>
+                                            <td>May 18, 2025</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Database Status:</strong></td>
+                                            <td><span class="badge bg-success">Connected</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>
