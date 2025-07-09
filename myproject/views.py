@@ -1,3 +1,6 @@
+"""
+A web-based smart attendance management system for educational institutions, built with Python and Flask.
+"""
 from flask import render_template, redirect, url_for, request, Blueprint, flash, jsonify, session
 from myproject import db, app
 from flask_login import login_user, current_user, logout_user, login_required

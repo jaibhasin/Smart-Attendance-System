@@ -1,6 +1,6 @@
-# Smart Attendance System
+A web-based smart attendance management system for educational institutions, built with Python and Flask.
 
-A web-based attendance management system for schools/universities, built with Python and Flask.
+# Smart Attendance System
 
 ## Features
 - Admin, Teacher, Student, and Parent logins
