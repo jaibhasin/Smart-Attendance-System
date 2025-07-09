@@ -46,7 +46,8 @@ class Student(db.Model , UserMixin):
         return (f"{self.first_name} {self.last_name} : {self.branch} : {self.email}")
 
     def check_password(self, password):
-        return check_password_hash(self.password, password)
+        """Verify a student's password."""
+        return check_password_hash(self.password_hash, password)
 
 
 class Professor(db.Model , UserMixin):
@@ -73,7 +74,8 @@ class Professor(db.Model , UserMixin):
         return (f"{self.first_name} {self.last_name} : {self.email}")
 
     def check_password(self, password):
-        return check_password_hash(self.password, password)
+        """Verify a professor's password."""
+        return check_password_hash(self.password_hash, password)
 
 
 class Course(db.Model):
@@ -94,7 +96,8 @@ class Parent(db.Model , UserMixin):
     contact = db.Column(db.String(50))
 
     def check_password(self, password):
-        return check_password_hash(self.password, password)
+        """Verify a parent's password."""
+        return check_password_hash(self.password_hash, password)
 
     def get_id(self):
         return f'parent_{self.parent_id}'
